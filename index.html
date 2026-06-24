@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ColorBot</title>
+  <style>
+    :root {
+      --bg: #313338;
+      --surface: #2b2d31;
+      --surface2: #232428;
+      --accent: #5865f2;
+      --accent-hover: #4752c4;
+      --green: #57f287;
+      --text: #dbdee1;
+      --muted: #b5bac1;
+      --border: #1e1f22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    a { text-decoration: none; }
+
+    nav {
+      background: var(--surface2);
+      padding: 0 40px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo { font-size: 18px; font-weight: 700; color: var(--accent); letter-spacing: -.3px; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: var(--muted); font-size: 14px; transition: color .15s; }
+    .nav-links a:hover { color: var(--text); }
+
+    .hero {
+      padding: 96px 40px 80px;
+      text-align: center;
+      background: linear-gradient(180deg, var(--surface2) 0%, var(--bg) 100%);
+    }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(88,101,242,.2);
+      color: #7289da;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: 52px;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -.5px;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p { font-size: 17px; color: var(--muted); max-width: 460px; margin: 0 auto 36px; }
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: background .15s, transform .1s, box-shadow .15s;
+      cursor: pointer;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 4px 14px rgba(88,101,242,.35); }
+    .btn-primary:hover { background: var(--accent-hover); box-shadow: 0 6px 18px rgba(88,101,242,.45); }
+    .btn-ghost {
+      background: var(--surface);
+      color: var(--text);
+      margin-left: 12px;
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: var(--surface2); }
+
+    .color-strip {
+      display: flex;
+      height: 5px;
+      max-width: 400px;
+      margin: 56px auto 0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .color-strip span { flex: 1; }
+
+    .section { max-width: 960px; margin: 0 auto; padding: 72px 40px; }
+    .section-header { margin-bottom: 40px; }
+    .section-header h2 { font-size: 30px; font-weight: 700; margin-bottom: 8px; }
+    .section-header p { color: var(--muted); font-size: 15px; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: border-color .2s;
+    }
+    .card:hover { border-color: var(--accent); }
+    .card-icon {
+      width: 40px; height: 40px;
+      background: rgba(88,101,242,.15);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .card-icon svg { width: 20px; height: 20px; fill: var(--accent); }
+    .card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .card p { font-size: 13px; color: var(--muted); }
+
+    .divider { height: 1px; background: var(--border); max-width: 960px; margin: 0 auto; }
+
+    .cmd-list { display: flex; flex-direction: column; gap: 12px; }
+    .cmd {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 26px;
+      transition: border-color .2s;
+    }
+    .cmd:hover { border-color: #3d3f45; }
+    .cmd-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+    .cmd-name {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      background: var(--surface2);
+      color: var(--accent);
+      padding: 3px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 9px;
+      border-radius: 999px;
+      letter-spacing: .3px;
+    }
+    .badge-admin { background: rgba(88,101,242,.15); color: #7289da; }
+    .badge-user { background: rgba(87,242,135,.12); color: var(--green); }
+    .cmd p { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+    .args { display: flex; flex-wrap: wrap; gap: 6px; }
+    .arg {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 12px;
+      padding: 2px 9px;
+      border-radius: 5px;
+      background: var(--surface2);
+      color: var(--muted);
+    }
+    .arg.req { color: var(--text); }
+    .arg-hint { font-size: 11px; color: #555; margin-left: 4px; }
+
+    footer {
+      text-align: center;
+      padding: 36px 40px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    footer span { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 36px; }
+      .btn-ghost { margin-left: 0; margin-top: 10px; }
+      nav { padding: 0 20px; }
+      .nav-links { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">ColorBot</div>
+  <div class="nav-links">
+    <a href="#features">機能</a>
+    <a href="#commands">コマンド</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-tag">Discord Bot</div>
+  <h1>ロールカラーを<br><span>自動・自由に。</span></h1>
+  <p>サーバーのロールカラーを自動でランダム変更。カラーピッカーで好きな色に固定することも。</p>
+  <a class="btn btn-primary" href="#">Discordに追加</a>
+  <a class="btn btn-ghost" href="#commands">コマンドを見る</a>
+  <div class="color-strip">
+    <span style="background:#f04747"></span>
+    <span style="background:#faa61a"></span>
+    <span style="background:#57f287"></span>
+    <span style="background:#5865f2"></span>
+    <span style="background:#eb459e"></span>
+    <span style="background:#00b0f4"></span>
+    <span style="background:#9b59b6"></span>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<div class="section" id="features">
+  <div class="section-header">
+    <h2>機能</h2>
+    <p>シンプルな設定で導入できます。</p>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm-1-5h2v2h-2zm0-8h2v6h-2z"/></svg>
+      </div>
+      <h3>自動カラー変更</h3>
+      <p>指定したロールの色を設定した間隔でランダムに自動変更。60秒〜86400秒で自由に設定できます。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+      </div>
+      <h3>カラーピッカー</h3>
+      <p>ブラウザのネイティブカラーピッカーで色を視覚的に選択してロールに即時反映。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+      </div>
+      <h3>マルチサーバー対応</h3>
+      <p>複数のサーバーに導入しても設定はサーバーごとに独立して管理されます。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+      </div>
+      <h3>権限管理</h3>
+      <p>オーナー承認フローと許可ユーザー制限で、意図しないカラー変更を防止します。</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section" id="commands">
+  <div class="section-header">
+    <h2>コマンド</h2>
+    <p>スラッシュコマンドで簡単操作。</p>
+  </div>
+  <div class="cmd-list">
+    <div class="cmd">
+      <div class="cmd-row">
+        <span class="cmd-name">/change_color</span>
+        <span class="badge badge-admin">管理者</span>
+      </div>
+      <p>指定したロールの色を N 秒ごとにランダム変更します。interval_seconds を 0 にすると停止。</p>
+      <div class="args">
+        <span class="arg req">role</span>
+        <span class="arg req">interval_seconds</span>
+        <span class="arg-hint">0 = 停止 / 最小 60 / 最大 86400</span>
+      </div>
+    </div>
+    <div class="cmd">
+      <div class="cmd-row">
+        <span class="cmd-name">/yuu_color</span>
+        <span class="badge badge-admin">管理者</span>
+        <span class="badge badge-user">許可ユーザー</span>
+      </div>
+      <p>ロールカラーを手動設定します。管理者は対象ロールと許可ユーザーを設定できます。引数なしでカラーピッカーを起動。</p>
+      <div class="args">
+        <span class="arg">role</span>
+        <span class="arg">user</span>
+        <span class="arg">r</span>
+        <span class="arg">g</span>
+        <span class="arg">b</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  ColorBot &mdash; Built with <span>discord.py</span>
+</footer>
+
+</body>
+</html>
